@@ -194,6 +194,14 @@ class Nf_custom_addon_Admin
         $pdf_elements['spouse'] = null;
         if (!empty($data) && array_key_exists('fields',$data)) {
             $fields = $data['fields'];
+            $available_settings = array_column($fields,'settings'); 
+			$settings_keys = array_column($available_settings,'key');
+			// error_log(print_r($available_settings,1));
+			//if not YMB registration form return 
+            if (!in_array('pps_number',$settings_keys)) {
+               return $attachments;
+            }
+            //check is it a YMB Registration form 
             foreach ($fields as $field) {
                 $settings = $field['settings'];
 
@@ -245,7 +253,7 @@ class Nf_custom_addon_Admin
                 }
             }//end foreach
         }
-        error_log(print_r($pdf_elements,1));
+        // error_log(print_r($pdf_elements,1));
         // error_log(pdf_contents($pdf_elements));
 
         $file_name = $pdf_elements['signer'] . '_' . $pdf_elements['account_id'];
