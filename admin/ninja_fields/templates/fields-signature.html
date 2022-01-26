@@ -1,0 +1,18 @@
+<script id="tmpl-nf-field-signature" type="text/template">
+      <div class="signature-field">
+          <div class="links"><a href="javascript:void(0)">Type</a> Or <a href="javascript:void(0)">Draw</a></div>
+      <input data-type='signature' id="nf-field-{{{ data.id }}}" name="nf-field-{{{ data.id }}}" aria-invalid="false" aria-describedby="nf-error-{{{ data.id }}}" class="{{{ data.renderClasses() }}} nf-element"
+                 aria-labelledby="nf-label-field-{{{ data.id }}}"
+                  {{{ data.maybeRequired() }}}
+                 type="hidden" value="{{{ data.renderNumberDefault() }}}"{{{ data.renderPlaceholder() }}}>
+  <input type="text" class="type-field" value="">
+                 <canvas class="signature hidden" width="450" height="150" style="border: 1px solid #ddd;"></canvas>
+    <br>
+    <button class="clear-signature hidden">Clear</button>
+      </div>
+</script>
+
+
+
+
+
