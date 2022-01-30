@@ -32,7 +32,7 @@
   // On Document Ready...
 
   jQuery(document).on("nfFormReady", function () {
-    const signatureFieldProcess = () => {
+    const signatureFieldProcess = function () {
       let $ = jQuery,
         $this = $(this),
         $canvas = $this.find(".signature").first(),
@@ -97,7 +97,7 @@
           ) {
             jQuery(".signature-field")
               .not(".applied")
-              .each(signatureFieldProcess());
+              .each(signatureFieldProcess);
           }
 
           // code to be run when a conditional is field is shown
@@ -105,7 +105,7 @@
       });
       new myConditionalLogicController();
     }
-    jQuery(".signature-field").not(".applied").each(signatureFieldProcess());
+    jQuery(".signature-field").not(".applied").each(signatureFieldProcess);
 
     // var signaturePad = new SignaturePad(canvas);
   });
