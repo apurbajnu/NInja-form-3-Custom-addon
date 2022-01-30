@@ -45,6 +45,12 @@ class Nf_custom_addon_Admin
     private $version;	
 
     /**
+     * plugin folder
+     */
+
+    private $plugin_dir = 'nf_custom_addon';
+
+    /**
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
@@ -58,7 +64,8 @@ class Nf_custom_addon_Admin
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->actions();
-        $this->generatePdf('test','<h1>Hello world!</h1>');
+
+        // $this->generatePdf('test','<h1>Hello world!</h1>');
     }
 
     /**
@@ -70,10 +77,25 @@ class Nf_custom_addon_Admin
         add_filter( 'ninja_forms_register_fields', [$this, 'register_fields'] );
 
         add_filter( 'ninja_forms_field_template_file_paths', [$this, 'register_template_path'] );
-        // add_filter( 'ninja_forms_submit_data', [$this, 'collect_ninja_form_sumitted_data'] );
+        add_filter( 'ninja_forms_submit_data', [$this, 'base64toImage'] );
         // add_action( 'my_ninja_forms_processing', [$this, 'my_ninja_forms_processing_callback'] );
 
         add_filter( 'ninja_forms_action_email_attachments', [$this, 'attached_pdf_after_generating'], 10, 3 );
+    }
+
+    public function base64toImage($formData)
+    {
+        // error_log(print_r($formData,1));
+        foreach ( $formData['fields'] as $key => $field ) {
+            if ( $this->is_base64_image($field['value'])) {
+                $formData['fields'][$key]['value'] = $this->saveSignature($field['value']);
+                // $field['value'] = $this->saveSignature($field['value']);
+            }
+        }
+        // error_log('From Data');
+        // error_log(print_r($formData,1));
+
+        return $formData;
     }
 
     /**
@@ -81,7 +103,7 @@ class Nf_custom_addon_Admin
 	 */
     public function create_directory_from_array_by_index(Array $folder_list):String
     {
-        $directory_path = plugin_dir_path( __FILE__ ) . '../';
+        $directory_path = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->plugin_dir;
         $parent_folder = $directory_path . DIRECTORY_SEPARATOR;
 
         if (count($folder_list) > 0) {
@@ -195,11 +217,11 @@ class Nf_custom_addon_Admin
         if (!empty($data) && array_key_exists('fields',$data)) {
             $fields = $data['fields'];
             $available_settings = array_column($fields,'settings'); 
-			$settings_keys = array_column($available_settings,'key');
-			// error_log(print_r($available_settings,1));
-			//if not YMB registration form return 
+            $settings_keys = array_column($available_settings,'key');
+            // error_log(print_r($available_settings,1));
+            //if not YMB registration form return 
             if (!in_array('pps_number',$settings_keys)) {
-               return $attachments;
+                return $attachments;
             }
             //check is it a YMB Registration form 
             foreach ($fields as $field) {
@@ -249,7 +271,7 @@ class Nf_custom_addon_Admin
                 $pdf_elements['account_id'] = $this->form_id;
                 $pdf_elements['form_data']['ip'] = $this->get_client_ip();
                 if ($settings['type'] == 'signature') {
-                    $pdf_elements['signs'][] = $this->saveSignature($field['value']);
+                    $pdf_elements['signs'][] = $field['value'];
                 }
             }//end foreach
         }
@@ -262,14 +284,44 @@ class Nf_custom_addon_Admin
         return $attachments;
     }
 
-    public function saveSignature($data_uri)
+    public function is_base64_image($base64)
+    {
+        $base64 = explode(',', $base64);
+        if (!array_key_exists(1,$base64)) {
+            return false;
+        }
+        $base64 = $base64[1];
+
+        if (empty($base64)) {
+            return false;
+        }
+
+        $data = base64_decode($base64);
+        $img = @imagecreatefromstring($data);
+        if (!$img) {
+            return false;
+        }
+
+        imagepng($img, 'tmp.png');
+        $info = getimagesize('tmp.png');
+
+        unlink('tmp.png');
+
+        if ($info[0] > 0 && $info[1] > 0 && $info['mime']) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public  function saveSignature($data_uri)
     {
         $random_name = strftime( '%Y%m%d-%H%M%S-' ) . substr( md5( mt_rand() ), 0, 18 );
         $destination = $this->create_basic_directory_for_pdf (['sign']);
         $encoded_image = explode(',', $data_uri)[1];
         $decoded_image = base64_decode($encoded_image);
         file_put_contents( $destination . DIRECTORY_SEPARATOR . $random_name . '.png', $decoded_image);
-        return $destination . DIRECTORY_SEPARATOR . $random_name . '.png';
+        return plugin_dir_url( $destination) . 'sign' . DIRECTORY_SEPARATOR . $random_name . '.png';
     }
 
     /**

@@ -111,7 +111,8 @@ function pdf_contents( $pdf_elements )
     .wrapper-page:last-child {
         page-break-after: avoid;
     }
-    .end-page{
+
+    .end-page {
         position: relative;
     }
 
@@ -123,7 +124,7 @@ function pdf_contents( $pdf_elements )
     }
 
     .footer>p {
-      font-size: 18px;
+        font-size: 18px;
     }
 </style>
 <div class="wrapper-page">
@@ -166,7 +167,7 @@ function pdf_contents( $pdf_elements )
     <br>
 
 
-  
+
 </div>
 <div class="wrapper-page">
     <?php
@@ -224,7 +225,7 @@ $element = array_chunk( $pdf_elements['form_data'], 2, true ); ?>
 
     </table>
 
-  
+
 </div>
 <?php if ($pdf_elements['spouse'] !== null):?>
 <div class="wrapper-page">
@@ -287,7 +288,7 @@ $element = array_chunk( $pdf_elements['spouse_form_data'], 2, true ); ?>
 
     </table>
 
-  
+
 </div>
 <?php endif; ?>
 <div class="wrapper-page">
@@ -373,7 +374,7 @@ $element = array_chunk( $pdf_elements['spouse_form_data'], 2, true ); ?>
 
     </table>
 
-  
+
 </div>
 <div class="end-page">
     <div class="center-log">
@@ -410,20 +411,18 @@ $element = array_chunk( $pdf_elements['spouse_form_data'], 2, true ); ?>
         <tr>
             <td colspan="2"></td>
         </tr>
-        <?php foreach ( $pdf_elements['signs'] as $key => $s ): ?>
+
         <tr>
             <td>
                 <span class="red">SIGNED (CLIENT):</span><br>
                 <div class="signature">
                     <img height="80px" width="300px" class="sign"
-                        src="<?php echo $s; ?>" alt="client_sign">
+                        src="<?php echo $pdf_elements['signs'][0]; ?>"
+                        alt="client_sign">
                 </div>
                 <hr>
                 <?php
-                $name = $pdf_elements['signer'];
-    if ( $key == 1 ) {
-        $name = $pdf_elements['spouse'];
-    } ?>
+                $name = $pdf_elements['signer']; ?>
                 <span class="red"><?php echo $name ?></span><br>
                 <span class="red"><?php echo date( 'l dS \o\f F Y H:i:s' ) ?></span>
 
@@ -440,8 +439,35 @@ $element = array_chunk( $pdf_elements['spouse_form_data'], 2, true ); ?>
                 <span class="red"><?php echo date( 'l dS \o\f F Y H:i:s' ) ?></span>
             </td>
         </tr>
+        <?php if ( $pdf_elements['spouse'] !== null ):?>
+        <tr>
+            <td>
+                <span class="red">SIGNED (CLIENT):</span><br>
+                <div class="signature">
+                    <img height="80px" width="300px" class="sign"
+                        src="<?php echo $pdf_elements['signs'][1]; ?>"
+                        alt="client_sign">
+                </div>
+                <hr>
+                <?php
+                $name = $pdf_elements['signer']; ?>
+                <span class="red"><?php echo $pdf_elements['spouse'] ?></span><br>
+                <span class="red"><?php echo date( 'l dS \o\f F Y H:i:s' ) ?></span>
 
-        <?php endforeach; ?>
+            </td>
+            <td>
+                <span class="red">SIGNED (AGENT):</span><br>
+                <div class="signature">
+                    <img height="80px"
+                        src="<?php echo $pdf_elements['admin_sign'] ?>"
+                        alt="client_sign sign">
+                </div>
+                <hr>
+                <span class="red">YourMoneyBack</span><br>
+                <span class="red"><?php echo date( 'l dS \o\f F Y H:i:s' ) ?></span>
+            </td>
+        </tr>
+        <?php endif; ?>
     </table>
 
     <table>
@@ -460,7 +486,7 @@ $element = array_chunk( $pdf_elements['spouse_form_data'], 2, true ); ?>
             </td>
         </tr>
     </table>
-  
+
 </div>
 <?php
 

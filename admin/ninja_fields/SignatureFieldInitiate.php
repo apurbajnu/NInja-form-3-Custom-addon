@@ -1,7 +1,7 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit;
-
-
+if ( !defined( 'ABSPATH' ) ) {
+    exit;
+}
 
 class SignatureFieldInitiate extends NF_Abstracts_Input
 {
@@ -33,20 +33,10 @@ class SignatureFieldInitiate extends NF_Abstracts_Input
         return parent::get_type();
     }
 
-   
+    
 
-    protected $_settings = array( 'label','label_pos','filtrip_shortcode','required');
+  
 
-   
-
+    protected $_settings = ['label', 'label_pos', 'required'];
 }
-
-
-
-
-
-
-
-
-
 
