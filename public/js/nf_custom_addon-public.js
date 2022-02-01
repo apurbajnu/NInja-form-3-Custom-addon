@@ -59,7 +59,7 @@
 
       $typeField.blur(function (e) {
         signaturePad.clear();
-        tCtx.font = "40px Kalam";
+        tCtx.font = "70px Kalam";
         tCtx.fillStyle = "black";
         tCtx.fillText($typeField.val(), 20, 80);
         $hiddenInput.val(tCtx.canvas.toDataURL());

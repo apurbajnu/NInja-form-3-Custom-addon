@@ -64,7 +64,7 @@ class Nf_custom_addon_Admin
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->actions();
-
+        $this->get_incriment_id('YMB_');
         // $this->generatePdf('test','<h1>Hello world!</h1>');
     }
 
@@ -128,7 +128,6 @@ class Nf_custom_addon_Admin
     public function generatePdf($file_name,$content)
     {
         $destination = $this->create_basic_directory_for_pdf ();
-        $this->get_incriment_id('YMB_');
 
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->SetHTMLFooter('
@@ -137,8 +136,8 @@ class Nf_custom_addon_Admin
         		<tr>
         			<td><img width="300px" src="' . plugin_dir_path( __FILE__ ) . 'signs/logo2.png' . '"></td>
         			<td>
-        				<p>
-        					<span>YOURMONEYBACK</span> | ' . $this->form_id . '
+        				<p style="font-size: 20px;font-weight: 400;letter-spacing: 1.8px;">
+                        <span style="color: #7ea749;">YOURMONEYBACK</span>  | ' . $this->form_id . '
         				</p>
         			</td>
         		</tr>
